@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace dektrium\user\clients;
+namespace dsanchez98\user\clients;
 
 use yii\authclient\clients\Twitter as BaseTwitter;
 use yii\helpers\ArrayHelper;

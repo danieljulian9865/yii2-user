@@ -3,21 +3,19 @@
 /*
  * This file is part of the Dektrium project.
  *
- * (c) Dektrium project <http://github.com/dektrium/>
+ * (c) Dektrium project <http://github.com/dsanchez98/>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace dektrium\user\controllers;
+namespace dsanchez98\user\controllers;
 
-use dektrium\user\filters\AccessRule;
-use dektrium\user\Finder;
-use dektrium\user\models\Profile;
-use dektrium\user\models\User;
-use dektrium\user\models\UserSearch;
-use dektrium\user\Module;
-use dektrium\user\traits\EventTrait;
+use dsanchez98\user\Finder;
+use dsanchez98\user\models\Profile;
+use dsanchez98\user\models\User;
+use dsanchez98\user\models\UserSearch;
+use dsanchez98\user\Module;
 use Yii;
 use yii\base\ExitException;
 use yii\base\Model;
@@ -39,91 +37,6 @@ use yii\widgets\ActiveForm;
  */
 class AdminController extends Controller
 {
-    use EventTrait;
-
-    /**
-     * Event is triggered before creating new user.
-     * Triggered with \dektrium\user\events\UserEvent.
-     */
-    const EVENT_BEFORE_CREATE = 'beforeCreate';
-
-    /**
-     * Event is triggered after creating new user.
-     * Triggered with \dektrium\user\events\UserEvent.
-     */
-    const EVENT_AFTER_CREATE = 'afterCreate';
-
-    /**
-     * Event is triggered before updating existing user.
-     * Triggered with \dektrium\user\events\UserEvent.
-     */
-    const EVENT_BEFORE_UPDATE = 'beforeUpdate';
-
-    /**
-     * Event is triggered after updating existing user.
-     * Triggered with \dektrium\user\events\UserEvent.
-     */
-    const EVENT_AFTER_UPDATE = 'afterUpdate';
-
-    /**
-     * Event is triggered before updating existing user's profile.
-     * Triggered with \dektrium\user\events\UserEvent.
-     */
-    const EVENT_BEFORE_PROFILE_UPDATE = 'beforeProfileUpdate';
-
-    /**
-     * Event is triggered after updating existing user's profile.
-     * Triggered with \dektrium\user\events\UserEvent.
-     */
-    const EVENT_AFTER_PROFILE_UPDATE = 'afterProfileUpdate';
-
-    /**
-     * Event is triggered before confirming existing user.
-     * Triggered with \dektrium\user\events\UserEvent.
-     */
-    const EVENT_BEFORE_CONFIRM = 'beforeConfirm';
-
-    /**
-     * Event is triggered after confirming existing user.
-     * Triggered with \dektrium\user\events\UserEvent.
-     */
-    const EVENT_AFTER_CONFIRM = 'afterConfirm';
-
-    /**
-     * Event is triggered before deleting existing user.
-     * Triggered with \dektrium\user\events\UserEvent.
-     */
-    const EVENT_BEFORE_DELETE = 'beforeDelete';
-
-    /**
-     * Event is triggered after deleting existing user.
-     * Triggered with \dektrium\user\events\UserEvent.
-     */
-    const EVENT_AFTER_DELETE = 'afterDelete';
-
-    /**
-     * Event is triggered before blocking existing user.
-     * Triggered with \dektrium\user\events\UserEvent.
-     */
-    const EVENT_BEFORE_BLOCK = 'beforeBlock';
-
-    /**
-     * Event is triggered after blocking existing user.
-     * Triggered with \dektrium\user\events\UserEvent.
-     */
-    const EVENT_AFTER_BLOCK = 'afterBlock';
-
-    /**
-     * Event is triggered before unblocking existing user.
-     * Triggered with \dektrium\user\events\UserEvent.
-     */
-    const EVENT_BEFORE_UNBLOCK = 'beforeUnblock';
-
-    /**
-     * Event is triggered after unblocking existing user.
-     * Triggered with \dektrium\user\events\UserEvent.
-     */
-    const EVENT_AFTER_UNBLOCK = 'afterUnblock';
 
     /** @var Finder */
     protected $finder;
@@ -144,8 +57,8 @@ class AdminController extends Controller
     public function behaviors()
     {
         return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
+            'verbs'  => [
+                'class'   => VerbFilter::className(),
                 'actions' => [
                     'delete'  => ['post'],
                     'confirm' => ['post'],
@@ -154,13 +67,14 @@ class AdminController extends Controller
             ],
             'access' => [
                 'class' => AccessControl::className(),
-                'ruleConfig' => [
-                    'class' => AccessRule::className(),
-                ],
                 'rules' => [
                     [
-                        'allow' => true,
-                        'roles' => ['admin'],
+                        'allow'         => true,
+                        'roles'         => ['@'],
+                        'matchCallback' => function ()
+                {
+                    return Yii::$app->user->identity->getIsAdmin();
+                },
                     ],
                 ],
             ],
@@ -178,9 +92,10 @@ class AdminController extends Controller
         $searchModel  = Yii::createObject(UserSearch::className());
         $dataProvider = $searchModel->search(Yii::$app->request->get());
 
-        return $this->render('index', [
-            'dataProvider' => $dataProvider,
-            'searchModel'  => $searchModel,
+        return $this->render('index',
+                             [
+                    'dataProvider' => $dataProvider,
+                    'searchModel'  => $searchModel,
         ]);
     }
 
@@ -194,22 +109,24 @@ class AdminController extends Controller
     {
         /** @var User $user */
         $user = Yii::createObject([
-            'class'    => User::className(),
-            'scenario' => 'create',
+                    'class'    => User::className(),
+                    'scenario' => 'create',
         ]);
-        $event = $this->getUserEvent($user);
 
         $this->performAjaxValidation($user);
 
-        $this->trigger(self::EVENT_BEFORE_CREATE, $event);
-        if ($user->load(Yii::$app->request->post()) && $user->create()) {
-            Yii::$app->getSession()->setFlash('success', Yii::t('user', 'User has been created'));
-            $this->trigger(self::EVENT_AFTER_CREATE, $event);
+        if ($user->load(Yii::$app->request->post()) && $user->create())
+        {
+            Yii::$app->getSession()->setFlash('success',
+                                              Yii::t('user',
+                                                     'User has been created'));
+
             return $this->redirect(['update', 'id' => $user->id]);
         }
 
-        return $this->render('create', [
-            'user' => $user,
+        return $this->render('create',
+                             [
+                    'user' => $user,
         ]);
     }
 
@@ -223,21 +140,23 @@ class AdminController extends Controller
     public function actionUpdate($id)
     {
         Url::remember('', 'actions-redirect');
-        $user = $this->findModel($id);
+        $user           = $this->findModel($id);
         $user->scenario = 'update';
-        $event = $this->getUserEvent($user);
 
         $this->performAjaxValidation($user);
 
-        $this->trigger(self::EVENT_BEFORE_UPDATE, $event);
-        if ($user->load(Yii::$app->request->post()) && $user->save()) {
-            Yii::$app->getSession()->setFlash('success', Yii::t('user', 'Account details have been updated'));
-            $this->trigger(self::EVENT_AFTER_UPDATE, $event);
+        if ($user->load(Yii::$app->request->post()) && $user->save())
+        {
+            Yii::$app->getSession()->setFlash('success',
+                                              Yii::t('user',
+                                                     'Account details have been updated'));
+
             return $this->refresh();
         }
 
-        return $this->render('_account', [
-            'user' => $user,
+        return $this->render('_account',
+                             [
+                    'user' => $user,
         ]);
     }
 
@@ -253,26 +172,28 @@ class AdminController extends Controller
         Url::remember('', 'actions-redirect');
         $user    = $this->findModel($id);
         $profile = $user->profile;
-        $event   = $this->getProfileEvent($profile);
 
-        if ($profile == null) {
+        if ($profile == null)
+        {
             $profile = Yii::createObject(Profile::className());
             $profile->link('user', $user);
         }
 
         $this->performAjaxValidation($profile);
 
-        $this->trigger(self::EVENT_BEFORE_PROFILE_UPDATE, $event);
+        if ($profile->load(Yii::$app->request->post()) && $profile->save())
+        {
+            Yii::$app->getSession()->setFlash('success',
+                                              Yii::t('user',
+                                                     'Profile details have been updated'));
 
-        if ($profile->load(Yii::$app->request->post()) && $profile->save()) {
-            Yii::$app->getSession()->setFlash('success', Yii::t('user', 'Profile details have been updated'));
-            $this->trigger(self::EVENT_AFTER_PROFILE_UPDATE, $event);
             return $this->refresh();
         }
 
-        return $this->render('_profile', [
-            'user'    => $user,
-            'profile' => $profile,
+        return $this->render('_profile',
+                             [
+                    'user'    => $user,
+                    'profile' => $profile,
         ]);
     }
 
@@ -288,13 +209,14 @@ class AdminController extends Controller
         Url::remember('', 'actions-redirect');
         $user = $this->findModel($id);
 
-        return $this->render('_info', [
-            'user' => $user,
+        return $this->render('_info',
+                             [
+                    'user' => $user,
         ]);
     }
 
     /**
-     * If "dektrium/yii2-rbac" extension is installed, this page displays form
+     * If "dsanchez98/yii2-rbac" extension is installed, this page displays form
      * where user can assign multiple auth items to user.
      *
      * @param int $id
@@ -304,14 +226,16 @@ class AdminController extends Controller
      */
     public function actionAssignments($id)
     {
-        if (!isset(Yii::$app->extensions['dektrium/yii2-rbac'])) {
+        if (!isset(Yii::$app->extensions['dsanchez98/yii2-rbac']))
+        {
             throw new NotFoundHttpException();
         }
         Url::remember('', 'actions-redirect');
         $user = $this->findModel($id);
 
-        return $this->render('_assignments', [
-            'user' => $user,
+        return $this->render('_assignments',
+                             [
+                    'user' => $user,
         ]);
     }
 
@@ -324,14 +248,10 @@ class AdminController extends Controller
      */
     public function actionConfirm($id)
     {
-        $model = $this->findModel($id);
-        $event = $this->getUserEvent($model);
-
-        $this->trigger(self::EVENT_BEFORE_CONFIRM, $event);
-        $model->confirm();
-        $this->trigger(self::EVENT_AFTER_CONFIRM, $event);
-
-        Yii::$app->getSession()->setFlash('success', Yii::t('user', 'User has been confirmed'));
+        $this->findModel($id)->confirm();
+        Yii::$app->getSession()->setFlash('success',
+                                          Yii::t('user',
+                                                 'User has been confirmed'));
 
         return $this->redirect(Url::previous('actions-redirect'));
     }
@@ -346,15 +266,18 @@ class AdminController extends Controller
      */
     public function actionDelete($id)
     {
-        if ($id == Yii::$app->user->getId()) {
-            Yii::$app->getSession()->setFlash('danger', Yii::t('user', 'You can not remove your own account'));
-        } else {
-            $model = $this->findModel($id);
-            $event = $this->getUserEvent($model);
-            $this->trigger(self::EVENT_BEFORE_DELETE, $event);
-            $model->delete();
-            $this->trigger(self::EVENT_AFTER_DELETE, $event);
-            Yii::$app->getSession()->setFlash('success', Yii::t('user', 'User has been deleted'));
+        if ($id == Yii::$app->user->getId())
+        {
+            Yii::$app->getSession()->setFlash('danger',
+                                              Yii::t('user',
+                                                     'You can not remove your own account'));
+        }
+        else
+        {
+            $this->findModel($id)->delete();
+            Yii::$app->getSession()->setFlash('success',
+                                              Yii::t('user',
+                                                     'User has been deleted'));
         }
 
         return $this->redirect(['index']);
@@ -369,21 +292,28 @@ class AdminController extends Controller
      */
     public function actionBlock($id)
     {
-        if ($id == Yii::$app->user->getId()) {
-            Yii::$app->getSession()->setFlash('danger', Yii::t('user', 'You can not block your own account'));
-        } else {
-            $user  = $this->findModel($id);
-            $event = $this->getUserEvent($user);
-            if ($user->getIsBlocked()) {
-                $this->trigger(self::EVENT_BEFORE_UNBLOCK, $event);
+        if ($id == Yii::$app->user->getId())
+        {
+            Yii::$app->getSession()->setFlash('danger',
+                                              Yii::t('user',
+                                                     'You can not block your own account'));
+        }
+        else
+        {
+            $user = $this->findModel($id);
+            if ($user->getIsBlocked())
+            {
                 $user->unblock();
-                $this->trigger(self::EVENT_AFTER_UNBLOCK, $event);
-                Yii::$app->getSession()->setFlash('success', Yii::t('user', 'User has been unblocked'));
-            } else {
-                $this->trigger(self::EVENT_BEFORE_BLOCK, $event);
+                Yii::$app->getSession()->setFlash('success',
+                                                  Yii::t('user',
+                                                         'User has been unblocked'));
+            }
+            else
+            {
                 $user->block();
-                $this->trigger(self::EVENT_AFTER_BLOCK, $event);
-                Yii::$app->getSession()->setFlash('success', Yii::t('user', 'User has been blocked'));
+                Yii::$app->getSession()->setFlash('success',
+                                                  Yii::t('user',
+                                                         'User has been blocked'));
             }
         }
 
@@ -402,7 +332,8 @@ class AdminController extends Controller
     protected function findModel($id)
     {
         $user = $this->finder->findUserById($id);
-        if ($user === null) {
+        if ($user === null)
+        {
             throw new NotFoundHttpException('The requested page does not exist');
         }
 
@@ -418,12 +349,15 @@ class AdminController extends Controller
      */
     protected function performAjaxValidation($model)
     {
-        if (Yii::$app->request->isAjax && !Yii::$app->request->isPjax) {
-            if ($model->load(Yii::$app->request->post())) {
+        if (Yii::$app->request->isAjax && !Yii::$app->request->isPjax)
+        {
+            if ($model->load(Yii::$app->request->post()))
+            {
                 Yii::$app->response->format = Response::FORMAT_JSON;
                 echo json_encode(ActiveForm::validate($model));
                 Yii::$app->end();
             }
         }
     }
+
 }

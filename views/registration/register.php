@@ -3,7 +3,7 @@
 /*
  * This file is part of the Dektrium project.
  *
- * (c) Dektrium project <http://github.com/dektrium>
+ * (c) Dektrium project <http://github.com/dsanchez98>
  *
  * For the full copyright and license information, please view the LICENSE.md
  * file that was distributed with this source code.
@@ -14,8 +14,8 @@ use yii\widgets\ActiveForm;
 
 /**
  * @var yii\web\View              $this
- * @var dektrium\user\models\User $user
- * @var dektrium\user\Module      $module
+ * @var dsanchez98\user\models\User $user
+ * @var dsanchez98\user\Module      $module
  */
 
 $this->title = Yii::t('user', 'Sign up');

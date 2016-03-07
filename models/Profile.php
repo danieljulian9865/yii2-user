@@ -3,15 +3,14 @@
 /*
  * This file is part of the Dektrium project.
  *
- * (c) Dektrium project <http://github.com/dektrium/>
+ * (c) Dektrium project <http://github.com/dsanchez98/>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace dektrium\user\models;
+namespace dsanchez98\user\models;
 
-use dektrium\user\traits\ModuleTrait;
 use Yii;
 use yii\db\ActiveRecord;
 
@@ -32,7 +31,14 @@ use yii\db\ActiveRecord;
  */
 class Profile extends ActiveRecord
 {
-    use ModuleTrait;
+    /** @var \dsanchez98\user\Module */
+    protected $module;
+
+    /** @inheritdoc */
+    public function init()
+    {
+        $this->module = Yii::$app->getModule('user');
+    }
 
     /** @inheritdoc */
     public static function tableName()

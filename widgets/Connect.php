@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace dektrium\user\widgets;
+namespace dsanchez98\user\widgets;
 
 use Yii;
 use yii\authclient\ClientInterface;

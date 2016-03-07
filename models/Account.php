@@ -3,19 +3,18 @@
 /*
  * This file is part of the Dektrium project.
  *
- * (c) Dektrium project <http://github.com/dektrium/>
+ * (c) Dektrium project <http://github.com/dsanchez98/>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace dektrium\user\models;
+namespace dsanchez98\user\models;
 
-use dektrium\user\clients\ClientInterface;
-use dektrium\user\Finder;
-use dektrium\user\models\query\AccountQuery;
-use dektrium\user\Module;
-use dektrium\user\traits\ModuleTrait;
+use dsanchez98\user\clients\ClientInterface;
+use dsanchez98\user\Finder;
+use dsanchez98\user\models\query\AccountQuery;
+use dsanchez98\user\Module;
 use Yii;
 use yii\authclient\ClientInterface as BaseClientInterface;
 use yii\db\ActiveRecord;
@@ -39,13 +38,20 @@ use yii\helpers\Url;
  */
 class Account extends ActiveRecord
 {
-    use ModuleTrait;
+    /** @var Module */
+    protected $module;
 
     /** @var Finder */
     protected static $finder;
 
     /** @var */
     private $_data;
+
+    /** @inheritdoc */
+    public function init()
+    {
+        $this->module = Yii::$app->getModule('user');
+    }
 
     /** @inheritdoc */
     public static function tableName()

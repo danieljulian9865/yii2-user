@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-use dektrium\user\widgets\Connect;
+use dsanchez98\user\widgets\Connect;
 use yii\helpers\Html;
 
 /*

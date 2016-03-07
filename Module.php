@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace dektrium\user;
+namespace dsanchez98\user;
 
 use yii\base\Module as BaseModule;
 
@@ -22,7 +22,7 @@ use yii\base\Module as BaseModule;
  */
 class Module extends BaseModule
 {
-    const VERSION = '1.0.0-dev';
+    const VERSION = '0.9.5';
 
     /** Email is changed right after user enter's new email address. */
     const STRATEGY_INSECURE = 0;

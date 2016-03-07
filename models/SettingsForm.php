@@ -3,18 +3,17 @@
 /*
  * This file is part of the Dektrium project.
  *
- * (c) Dektrium project <http://github.com/dektrium/>
+ * (c) Dektrium project <http://github.com/dsanchez98/>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace dektrium\user\models;
+namespace dsanchez98\user\models;
 
-use dektrium\user\helpers\Password;
-use dektrium\user\Mailer;
-use dektrium\user\Module;
-use dektrium\user\traits\ModuleTrait;
+use dsanchez98\user\helpers\Password;
+use dsanchez98\user\Mailer;
+use dsanchez98\user\Module;
 use Yii;
 use yii\base\Model;
 
@@ -27,8 +26,6 @@ use yii\base\Model;
  */
 class SettingsForm extends Model
 {
-    use ModuleTrait;
-
     /** @var string */
     public $email;
 
@@ -40,6 +37,9 @@ class SettingsForm extends Model
 
     /** @var string */
     public $current_password;
+
+    /** @var Module */
+    protected $module;
 
     /** @var Mailer */
     protected $mailer;
@@ -61,6 +61,7 @@ class SettingsForm extends Model
     public function __construct(Mailer $mailer, $config = [])
     {
         $this->mailer = $mailer;
+        $this->module = Yii::$app->getModule('user');
         $this->setAttributes([
             'username' => $this->user->username,
             'email'    => $this->user->unconfirmed_email ?: $this->user->email,

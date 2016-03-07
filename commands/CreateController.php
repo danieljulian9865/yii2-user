@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace dektrium\user\commands;
+namespace dsanchez98\user\commands;
 
-use dektrium\user\models\User;
+use dsanchez98\user\models\User;
 use Yii;
 use yii\console\Controller;
 use yii\helpers\Console;
@@ -19,7 +19,7 @@ use yii\helpers\Console;
 /**
  * Creates new user account.
  *
- * @property \dektrium\user\Module $module
+ * @property \dsanchez98\user\Module $module
  *
  * @author Dmitry Erofeev <dmeroff@gmail.com>
  */

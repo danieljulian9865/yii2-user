@@ -3,17 +3,16 @@
 /*
  * This file is part of the Dektrium project.
  *
- * (c) Dektrium project <http://github.com/dektrium/>
+ * (c) Dektrium project <http://github.com/dsanchez98/>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace dektrium\user\models;
+namespace dsanchez98\user\models;
 
-use dektrium\user\Finder;
-use dektrium\user\Mailer;
-use dektrium\user\traits\ModuleTrait;
+use dsanchez98\user\Finder;
+use dsanchez98\user\Mailer;
 use Yii;
 use yii\base\Model;
 
@@ -27,12 +26,14 @@ use yii\base\Model;
  */
 class ResendForm extends Model
 {
-    use ModuleTrait;
     /** @var string */
     public $email;
 
     /** @var User */
     private $_user;
+
+    /** @var \dsanchez98\user\Module */
+    protected $module;
 
     /** @var Mailer */
     protected $mailer;
@@ -47,6 +48,7 @@ class ResendForm extends Model
      */
     public function __construct(Mailer $mailer, Finder $finder, $config = [])
     {
+        $this->module = Yii::$app->getModule('user');
         $this->mailer = $mailer;
         $this->finder = $finder;
         parent::__construct($config);

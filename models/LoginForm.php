@@ -3,19 +3,18 @@
 /*
  * This file is part of the Dektrium project.
  *
- * (c) Dektrium project <http://github.com/dektrium/>
+ * (c) Dektrium project <http://github.com/dsanchez98/>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace dektrium\user\models;
+namespace dsanchez98\user\models;
 
-use dektrium\user\Finder;
-use dektrium\user\helpers\Password;
+use dsanchez98\user\Finder;
+use dsanchez98\user\helpers\Password;
 use Yii;
 use yii\base\Model;
-use dektrium\user\traits\ModuleTrait;
 
 /**
  * LoginForm get user's login and password, validates them and logs the user in. If user has been blocked, it adds
@@ -25,7 +24,6 @@ use dektrium\user\traits\ModuleTrait;
  */
 class LoginForm extends Model
 {
-    use ModuleTrait;
 
     /** @var string User's email or username */
     public $login;
@@ -36,8 +34,11 @@ class LoginForm extends Model
     /** @var string Whether to remember the user */
     public $rememberMe = false;
 
-    /** @var \dektrium\user\models\User */
+    /** @var \dsanchez98\user\models\User */
     protected $user;
+
+    /** @var \dsanchez98\user\Module */
+    protected $module;
 
     /** @var Finder */
     protected $finder;
@@ -49,6 +50,7 @@ class LoginForm extends Model
     public function __construct(Finder $finder, $config = [])
     {
         $this->finder = $finder;
+        $this->module = Yii::$app->getModule('user');
         parent::__construct($config);
     }
 
@@ -66,26 +68,39 @@ class LoginForm extends Model
     public function rules()
     {
         return [
-            'requiredFields' => [['login', 'password'], 'required'],
-            'loginTrim' => ['login', 'trim'],
+            'requiredFields'   => [['login', 'password'], 'required'],
+            'loginTrim'        => ['login', 'trim'],
             'passwordValidate' => [
                 'password',
-                function ($attribute) {
-                    if ($this->user === null || !Password::validate($this->password, $this->user->password_hash)) {
-                        $this->addError($attribute, Yii::t('user', 'Invalid login or password'));
+                function ($attribute)
+                {
+                    if ($this->user === null || !Password::validate($this->password,
+                                                                    $this->user->password_hash))
+                    {
+                        $this->addError($attribute,
+                                        Yii::t('user',
+                                               'Invalid login or password'));
                     }
                 }
             ],
             'confirmationValidate' => [
                 'login',
-                function ($attribute) {
-                    if ($this->user !== null) {
+                function ($attribute)
+                {
+                    if ($this->user !== null)
+                    {
                         $confirmationRequired = $this->module->enableConfirmation && !$this->module->enableUnconfirmedLogin;
-                        if ($confirmationRequired && !$this->user->getIsConfirmed()) {
-                            $this->addError($attribute, Yii::t('user', 'You need to confirm your email address'));
+                        if ($confirmationRequired && !$this->user->getIsConfirmed())
+                        {
+                            $this->addError($attribute,
+                                            Yii::t('user',
+                                                   'You need to confirm your email address'));
                         }
-                        if ($this->user->getIsBlocked()) {
-                            $this->addError($attribute, Yii::t('user', 'Your account has been blocked'));
+                        if ($this->user->getIsBlocked())
+                        {
+                            $this->addError($attribute,
+                                            Yii::t('user',
+                                                   'Your account has been blocked'));
                         }
                     }
                 }
@@ -101,9 +116,13 @@ class LoginForm extends Model
      */
     public function login()
     {
-        if ($this->validate()) {
-            return Yii::$app->getUser()->login($this->user, $this->rememberMe ? $this->module->rememberFor : 0);
-        } else {
+        if ($this->validate())
+        {
+            return Yii::$app->getUser()->login($this->user,
+                                               $this->rememberMe ? $this->module->rememberFor : 0);
+        }
+        else
+        {
             return false;
         }
     }
@@ -117,12 +136,16 @@ class LoginForm extends Model
     /** @inheritdoc */
     public function beforeValidate()
     {
-        if (parent::beforeValidate()) {
+        if (parent::beforeValidate())
+        {
             $this->user = $this->finder->findUserByUsernameOrEmail($this->login);
 
             return true;
-        } else {
+        }
+        else
+        {
             return false;
         }
     }
+
 }

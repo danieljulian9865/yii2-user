@@ -3,16 +3,16 @@
 /*
  * This file is part of the Dektrium project.
  *
- * (c) Dektrium project <http://github.com/dektrium/>
+ * (c) Dektrium project <http://github.com/dsanchez98/>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace dektrium\user;
+namespace dsanchez98\user;
 
-use dektrium\user\models\query\AccountQuery;
-use dektrium\user\models\Token;
+use dsanchez98\user\models\query\AccountQuery;
+use dsanchez98\user\models\Token;
 use yii\authclient\ClientInterface;
 use yii\base\Object;
 use yii\db\ActiveQuery;

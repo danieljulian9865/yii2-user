@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace dektrium\user\clients;
+namespace dsanchez98\user\clients;
 
 use yii\authclient\clients\GoogleOAuth as BaseGoogle;
 
@@ -21,8 +21,8 @@ class Google extends BaseGoogle implements ClientInterface
     /** @inheritdoc */
     public function getEmail()
     {
-        return isset($this->getUserAttributes()['emails'][0]['value'])
-            ? $this->getUserAttributes()['emails'][0]['value']
+        return isset($this->getUserAttributes()['email'])
+            ? $this->getUserAttributes()['email']
             : null;
     }
 

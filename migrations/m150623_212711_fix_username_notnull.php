@@ -3,7 +3,7 @@
 /*
  * This file is part of the Dektrium project.
  *
- * (c) Dektrium project <http://github.com/dektrium/>
+ * (c) Dektrium project <http://github.com/dsanchez98/>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -16,11 +16,7 @@ class m150623_212711_fix_username_notnull extends Migration
 {
     public function up()
     {
-        if ($this->db->driverName === 'pgsql') {
-            $this->alterColumn('{{%user}}', 'username', 'SET NOT NULL');
-        } else {
-            $this->alterColumn('{{%user}}', 'username', Schema::TYPE_STRING . '(255) NOT NULL');
-        }
+        $this->alterColumn('{{%user}}', 'username', Schema::TYPE_STRING . '(255) NOT NULL');
     }
 
     public function down()

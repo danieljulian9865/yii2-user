@@ -3,13 +3,13 @@
 /*
  * This file is part of the Dektrium project
  *
- * (c) Dektrium project <http://github.com/dektrium>
+ * (c) Dektrium project <http://github.com/dsanchez98>
  *
  * For the full copyright and license information, please view the LICENSE.md
  * file that was distributed with this source code.
  */
 
-namespace dektrium\user\traits;
+namespace dsanchez98\user\traits;
 
 use Yii;
 use yii\base\Model;

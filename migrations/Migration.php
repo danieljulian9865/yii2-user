@@ -3,13 +3,13 @@
 /*
  * This file is part of the Dektrium project.
  *
- * (c) Dektrium project <http://github.com/dektrium/>
+ * (c) Dektrium project <http://github.com/dsanchez98/>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace dektrium\user\migrations;
+namespace dsanchez98\user\migrations;
 
 use Yii;
 
@@ -29,11 +29,9 @@ class Migration extends \yii\db\Migration
     public function init()
     {
         parent::init();
-
+		
         switch (Yii::$app->db->driverName) {
             case 'mysql':
-                $this->tableOptions = 'CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE=InnoDB';
-                break;
             case 'pgsql':
                 $this->tableOptions = null;
                 break;

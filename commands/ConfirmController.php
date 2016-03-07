@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace dektrium\user\commands;
+namespace dsanchez98\user\commands;
 
-use dektrium\user\Finder;
+use dsanchez98\user\Finder;
 use Yii;
 use yii\console\Controller;
 use yii\helpers\Console;
@@ -19,7 +19,7 @@ use yii\helpers\Console;
 /**
  * Confirms a user.
  *
- * @property \dektrium\user\Module $module
+ * @property \dsanchez98\user\Module $module
  *
  * @author Dmitry Erofeev <dmeroff@gmail.com>
  */

@@ -3,31 +3,28 @@
 /*
  * This file is part of the Dektrium project.
  *
- * (c) Dektrium project <http://github.com/dektrium/>
+ * (c) Dektrium project <http://github.com/dsanchez98/>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace dektrium\user\models;
+namespace dsanchez98\user\models;
 
-use dektrium\user\Finder;
-use dektrium\user\Mailer;
-use dektrium\user\traits\ModuleTrait;
+use dsanchez98\user\Finder;
+use dsanchez98\user\Mailer;
 use Yii;
 use yii\base\Model;
-use yii\helpers\ArrayHelper;
 
 /**
  * Model for collecting data on password recovery.
  *
- * @property \dektrium\user\Module $module
+ * @property \dsanchez98\user\Module $module
  *
  * @author Dmitry Erofeev <dmeroff@gmail.com>
  */
 class RecoveryForm extends Model
 {
-    use ModuleTrait;
     /** @var string */
     public $email;
 
@@ -36,6 +33,9 @@ class RecoveryForm extends Model
 
     /** @var User */
     protected $user;
+
+    /** @var \dsanchez98\user\Module */
+    protected $module;
 
     /** @var Mailer */
     protected $mailer;
@@ -50,6 +50,7 @@ class RecoveryForm extends Model
      */
     public function __construct(Mailer $mailer, Finder $finder, $config = [])
     {
+        $this->module = Yii::$app->getModule('user');
         $this->mailer = $mailer;
         $this->finder = $finder;
         parent::__construct($config);
@@ -67,11 +68,10 @@ class RecoveryForm extends Model
     /** @inheritdoc */
     public function scenarios()
     {
-        $scenarios = parent::scenarios();
-        return ArrayHelper::merge($scenarios, [
+        return [
             'request' => ['email'],
             'reset'   => ['password'],
-        ]);
+        ];
     }
 
     /** @inheritdoc */
