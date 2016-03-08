@@ -22,7 +22,8 @@ use yii\base\Module as BaseModule;
  */
 class Module extends BaseModule
 {
-    const VERSION = '0.9.5';
+
+    const VERSION = '1.0.0';
 
     /** Email is changed right after user enter's new email address. */
     const STRATEGY_INSECURE = 0;
@@ -92,4 +93,5 @@ class Module extends BaseModule
         'recover/<id:\d+>/<code:[A-Za-z0-9_-]+>' => 'recovery/reset',
         'settings/<action:\w+>'                  => 'settings/<action>'
     ];
+
 }
