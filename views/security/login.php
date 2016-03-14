@@ -172,18 +172,9 @@ Connect::widget([
         ])
         ?>
 
-
-
-
     </div>
 
-
-
-
-
     <?php ActiveForm::end(); ?>
-
-
 
 </div>
 
