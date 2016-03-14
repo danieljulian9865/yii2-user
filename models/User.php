@@ -41,7 +41,6 @@ use yii\web\IdentityInterface;
  * @property integer $confirmed_at
  * @property integer $blocked_at
  * @property integer $created_at
- * @property integer $last_login
  * @property integer $updated_at
  * @property integer $flags
  *
@@ -54,10 +53,10 @@ use yii\web\IdentityInterface;
 class User extends ActiveRecord implements IdentityInterface
 {
 
-    const BEFORE_CREATE   = 'beforeCreate';
-    const AFTER_CREATE    = 'afterCreate';
-    const BEFORE_REGISTER = 'beforeRegister';
-    const AFTER_REGISTER  = 'afterRegister';
+    const BEFORE_CREATE       = 'beforeCreate';
+    const AFTER_CREATE        = 'afterCreate';
+    const BEFORE_REGISTER     = 'beforeRegister';
+    const AFTER_REGISTER      = 'afterRegister';
     // following constants are used on secured email changing process
     const OLD_EMAIL_CONFIRMED = 0b1;
     const NEW_EMAIL_CONFIRMED = 0b10;
@@ -207,16 +206,16 @@ class User extends ActiveRecord implements IdentityInterface
                                                                              'This username has already been taken')],
             'usernameTrim'     => ['username', 'trim'],
             // email rules
-            'emailRequired' => ['email', 'required', 'on' => ['register', 'connect',
+            'emailRequired'    => ['email', 'required', 'on' => ['register', 'connect',
                     'create', 'update']],
-            'emailPattern'  => ['email', 'email'],
-            'emailLength'   => ['email', 'string', 'max' => 255],
-            'emailUnique'   => ['email', 'unique', 'message' => Yii::t('user',
-                                                                       'This email address has already been taken')],
-            'emailTrim'     => ['email', 'trim'],
+            'emailPattern'     => ['email', 'email'],
+            'emailLength'      => ['email', 'string', 'max' => 255],
+            'emailUnique'      => ['email', 'unique', 'message' => Yii::t('user',
+                                                                          'This email address has already been taken')],
+            'emailTrim'        => ['email', 'trim'],
             // password rules
             'passwordRequired' => ['password', 'required', 'on' => ['register']],
-            'passwordLength'   => ['password', 'string', 'min' => 6, 'on' => ['register',
+            'passwordLength'   => ['password', 'string', 'min' => 6, 'on'  => ['register',
                     'create']],
         ];
     }
@@ -516,7 +515,23 @@ class User extends ActiveRecord implements IdentityInterface
     /** @inheritdoc */
     public static function findIdentityByAccessToken($token, $type = null)
     {
-        throw new NotSupportedException('Method "' . __CLASS__ . '::' . __METHOD__ . '" is not implemented.');
+        $finder = Yii::$container->get(Finder::className());
+
+        if ($type == 'yii\filters\auth\HttpBasicAuth')
+        {
+
+            return $finder->findUserByUsernameOrEmail($token);
+        }
+        else
+        {
+
+            return null;
+        }
+    }
+
+    public static function getAccessToken()
+    {
+        return 'oaskdad';
     }
 
 }
